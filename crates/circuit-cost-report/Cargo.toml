@@ -1,0 +1,21 @@
+[package]
+name = "circuit-cost-report"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "circuit-cost-report"
+path = "src/main.rs"
+
+[dependencies]
+dsperse = { workspace = true }
+# Not re-exported through dsperse, so pulled in directly -- pinned to the
+# exact same rev dsperse itself depends on, so estimate_circuit here
+# computes identically to what sn2-miner would compute for the same
+# circuit. If sn2-miner's own pin ever moves, update this rev to match.
+jstprove_circuits = { git = "https://github.com/inference-labs-inc/JSTprove.git", rev = "87a1859f3487cf0fb9a463dbfd713b1df4827afc" }
+clap = { workspace = true }
+anyhow = { workspace = true }
+shellexpand = { workspace = true }

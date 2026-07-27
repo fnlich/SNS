@@ -23,6 +23,7 @@ members = [
     "crates/sn2-circuit-store",
     "crates/sn2-validator",
     "crates/sn2-miner",
+    "crates/circuit-cost-report",
 ]
 exclude = ["fuzz"]
 resolver = "2"

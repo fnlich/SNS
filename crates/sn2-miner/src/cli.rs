@@ -1,5 +1,17 @@
 use clap::{Parser, Subcommand};
 
+/// Rejects out-of-range values before they can reach the CPU-pressure ramp
+/// formula, where a negative threshold would silently make the heaviest-N
+/// skip partially active even at 0% CPU utilization instead of failing loudly.
+fn parse_unit_interval(s: &str) -> Result<f64, String> {
+    let v: f64 = s.parse().map_err(|e| format!("{e}"))?;
+    if (0.0..=1.0).contains(&v) {
+        Ok(v)
+    } else {
+        Err(format!("must be between 0.0 and 1.0, got {v}"))
+    }
+}
+
 #[derive(Subcommand, Debug, Clone)]
 pub enum Command {
     /// Emit an nftables ruleset that drops UDP traffic to the QUIC port from any
@@ -98,4 +110,30 @@ pub struct Cli {
 
     #[arg(long, default_value_t = sn2_types::CIRCUIT_TIMEOUT_SECONDS, value_parser = clap::value_parser!(u64).range(1..))]
     pub handler_timeout: u64,
+
+    #[arg(
+        long,
+        default_value_t = sn2_types::DEFAULT_MAX_HEAVIEST_N,
+        help = "Ceiling for the heaviest-N proof skip, reached once CPU utilization hits 100%. \
+                A request is skipped outright -- before attempting it -- when its circuit ranks \
+                among the current N heaviest distinct circuits observed so far (by \
+                estimate_circuit's constraint count, ranked against everything seen). The N \
+                actually used ramps linearly with live CPU utilization: 0 (never skips) at or \
+                below --cpu-pressure-threshold, up to this ceiling at 100%. Set to 0 to disable \
+                entirely, at any CPU load. Relative, not an absolute budget: widens on its own \
+                as more circuits are observed. Circuits declaring more than one activation \
+                placeholder are always skipped regardless of this setting, since the validator \
+                only ever sends one activation tensor."
+    )]
+    pub max_heaviest_n: usize,
+
+    #[arg(
+        long,
+        default_value_t = sn2_types::DEFAULT_CPU_PRESSURE_THRESHOLD,
+        value_parser = parse_unit_interval,
+        help = "System-wide CPU utilization fraction (0.0-1.0) at or below which the \
+                heaviest-N skip is always off (N=0). Above this, N ramps linearly toward \
+                --max-heaviest-n as utilization approaches 100%."
+    )]
+    pub cpu_pressure_threshold: f64,
 }

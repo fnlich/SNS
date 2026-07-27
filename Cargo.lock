@@ -1112,6 +1112,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "circuit-cost-report"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "dsperse",
+ "jstprove_circuits",
+ "shellexpand",
+]
+
+[[package]]
 name = "circuit-std-rs"
 version = "0.4.0"
 source = "git+https://github.com/inference-labs-inc/JSTprove.git?rev=87a1859f3487cf0fb9a463dbfd713b1df4827afc#87a1859f3487cf0fb9a463dbfd713b1df4827afc"
@@ -6365,6 +6376,7 @@ dependencies = [
  "clap",
  "ctor",
  "dsperse",
+ "jstprove_circuits",
  "mimalloc",
  "parity-scale-codec",
  "reqwest 0.12.28",

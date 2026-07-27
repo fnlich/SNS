@@ -64,7 +64,18 @@ pub const CAPACITY_TARGET_HEADROOM: f64 = 1.5;
 /// the cap flaps one step up and down around the target every adjustment
 /// interval, spamming capacity events at equilibrium.
 pub const CAPACITY_TARGET_DEADBAND: f64 = 0.25;
-pub const BUNDLE_CACHE_IDLE_TTL_SECS: u64 = 120;
+pub const BUNDLE_CACHE_IDLE_TTL_SECS: u64 = 3600;
+/// How often the background sampler re-reads `/proc/stat` to refresh the
+/// system-wide CPU utilization estimate used to drive the heaviest-N skip.
+pub const CPU_LOAD_SAMPLE_INTERVAL_MS: u64 = 500;
+/// CPU utilization fraction at or below which the heaviest-N skip N always
+/// computes to 0 (never skips). Above this, N ramps linearly up to
+/// `DEFAULT_MAX_HEAVIEST_N` as utilization approaches 100%.
+pub const DEFAULT_CPU_PRESSURE_THRESHOLD: f64 = 0.85;
+/// Default ceiling for the heaviest-N skip -- the N used once CPU
+/// utilization reaches 100%. Below `DEFAULT_CPU_PRESSURE_THRESHOLD`, N is
+/// always 0 regardless of this value.
+pub const DEFAULT_MAX_HEAVIEST_N: usize = 15;
 pub const CAPACITY_ADJUST_INTERVAL_SECS: u64 = 15;
 pub const CAPACITY_UNIT_REFERENCE_PERCENTILE: f64 = 0.1;
 pub const CAPACITY_RAMP_MIN_AVAIL_MEM_RATIO: f64 = 0.20;

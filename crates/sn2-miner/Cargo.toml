@@ -15,6 +15,7 @@ sn2-chain = { workspace = true }
 sn2-circuit-store = { workspace = true }
 btlightning = { workspace = true }
 dsperse = { workspace = true }
+jstprove_circuits = { git = "https://github.com/inference-labs-inc/JSTprove.git", rev = "87a1859f3487cf0fb9a463dbfd713b1df4827afc" }
 tokio = { workspace = true }
 serde_json = { workspace = true }
 anyhow = { workspace = true }
